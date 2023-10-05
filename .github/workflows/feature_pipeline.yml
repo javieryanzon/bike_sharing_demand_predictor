@@ -1,4 +1,4 @@
-name: hourly-taxi-demand-feature-pipeline  #feature-pipeline
+name: hourly-bike-demand-feature-pipeline  #feature-pipeline
 
 on:
   schedule:
