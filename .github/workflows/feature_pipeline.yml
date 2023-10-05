@@ -1,10 +1,10 @@
 name: hourly-bike-demand-feature-pipeline  #feature-pipeline
 
-on:
-  schedule:
-   - cron: '0 * * * *'
+# on:
+#   schedule:
+#    - cron: '0 * * * *'
 
-  workflow_dispatch:
+#   workflow_dispatch:
 
 env:
   PYTHON_VERSION: 3.9
