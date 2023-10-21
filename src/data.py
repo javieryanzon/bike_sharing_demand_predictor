@@ -10,25 +10,46 @@ from tqdm import tqdm
 import pyarrow as pa
 import zipfile
 import pyarrow.parquet as pq
+import subprocess
 
 from src.paths import RAW_DATA_DIR, TRANSFORMED_DATA_DIR
 
 
 def download_one_file_of_raw_data(year: int) -> Path: #, month: int) -> Path:
     """
-    Downloads Parquet file with historical taxi rides for the given `year` and
+    Downloads Parquet file with historical bike rides for the given `year` and
     `month`
     """
     URL = f'https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-{year}.zip'
-    response = requests.get(URL)
+    
+    # Ruta de destino para guardar el archivo descargado
+    destination_path = RAW_DATA_DIR / f'recorridos-realizados-{year}.zip'
 
-    if response.status_code == 200:
-        path = RAW_DATA_DIR / f'recorridos-realizados-{year}.zip'
-        open(path, "wb").write(response.content)
-        print(f'descargado año {year}')
-        return path
-    else:
-        raise Exception(f'{URL} is not available')
+    try:
+        # Utiliza wget para descargar el archivo en la ubicación deseada
+        subprocess.run(['wget', URL, '-O', destination_path])
+
+        # Verifica si el archivo se descargó correctamente
+        if destination_path.is_file():
+            print(f'Descargado año {year}')
+            return destination_path
+        else:
+            raise Exception(f'Error al descargar {URL}: El archivo no se descargó correctamente.')
+
+    except Exception as e:
+        raise Exception(f'Error al descargar {URL}: {str(e)}')
+    
+      
+        # response = requests.get(URL)
+
+    # if response.status_code == 200:
+    #     path = RAW_DATA_DIR / f'recorridos-realizados-{year}.zip'
+    #     open(path, "wb").write(response.content)
+    #     print(f'descargado año {year}')
+    #     # time.sleep(2)
+    #     return path
+    # else:
+    #     raise Exception(f'{URL} is not available')
 
 def unzip_and_convert_csv_to_parquet(year: int) -> Path:
     nombre_archivo_zip = RAW_DATA_DIR / f"recorridos-realizados-{year}.zip"
@@ -40,7 +61,7 @@ def unzip_and_convert_csv_to_parquet(year: int) -> Path:
         archivo_zip.extractall(RAW_DATA_DIR) #(f"../data/raw/")
 
         # Leer el archivo CSV con pandas
-        df = pd.read_csv(RAW_DATA_DIR / nombre_archivo_csv, delimiter=',', decimal=".")
+        df = pd.read_csv(nombre_archivo_csv, delimiter=',', decimal=".") #RAW_DATA_DIR /
 
         # Convertir el DataFrame a formato parquet
         nombre_archivo_parquet = f"rides_{year}.parquet"
