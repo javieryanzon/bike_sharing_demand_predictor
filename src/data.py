@@ -61,7 +61,7 @@ def unzip_and_convert_csv_to_parquet(year: int) -> Path:
         archivo_zip.extractall(RAW_DATA_DIR) #(f"../data/raw/")
 
         # Leer el archivo CSV con pandas
-        df = pd.read_csv(nombre_archivo_csv, delimiter=',', decimal=".") #RAW_DATA_DIR /
+        df = pd.read_csv(RAW_DATA_DIR / nombre_archivo_csv, delimiter=',', decimal=".") #RAW_DATA_DIR /
 
         # Convertir el DataFrame a formato parquet
         nombre_archivo_parquet = f"rides_{year}.parquet"
