@@ -1,8 +1,8 @@
 name: hourly-bike-demand-feature-pipeline  #feature-pipeline
 
-on:
-  schedule:
-   - cron: '0 * * * *'
+# on:
+#   schedule:
+#    - cron: '0 * * * *'
 
   workflow_dispatch:
 
@@ -51,6 +51,7 @@ jobs:
       
     - name: exceute python workflows from bash script
       env: 
+        HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }} #se agrega esto?
         HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
       run: poetry run jupyter nbconvert --to notebook --execute notebooks/12_feature_pipeline.ipynb
     
