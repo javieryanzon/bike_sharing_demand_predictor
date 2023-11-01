@@ -1,8 +1,8 @@
-name: hourly-taxi-demand-inference-pipeline #inference-pipeline
-
+name: hourly-bike-demand-inference-pipeline #inference-pipeline
+#
 on:
   workflow_run:
-    workflows: ["hourly-taxi-demand-feature-pipeline"]  #["feature-pipeline"]
+    workflows: ["hourly-bike-demand-feature-pipeline"]  #["feature-pipeline"]
     types:
       - completed
 
