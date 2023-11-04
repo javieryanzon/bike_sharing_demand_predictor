@@ -30,7 +30,7 @@ def get_model_predictions(model, features: pd.DataFrame) -> pd.DataFrame:
     predictions = predictions.round(0)
 
     results = pd.DataFrame(predictions,
-            columns=[f'rides_previous_{i+1}_hour' for i in reversed(range(36))]
+            columns=[f'rides_next_{i+1}_hour' for i in range(36)]
         ) #son 36 horas de prediccion
     results['pickup_location_id'] = features['pickup_location_id'].values
     #results['predicted_demand'] = predictions.round(0) #esto estaba antes
