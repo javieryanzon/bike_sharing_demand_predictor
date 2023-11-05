@@ -4,6 +4,9 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.multioutput import MultiOutputRegressor
 from src.paths import RAW_DATA_DIR
+import hopsworks
+import src.config as config
+from src.feature_store_api import get_feature_store
 
 import lightgbm as lgb
 
@@ -23,7 +26,7 @@ def average_rides_last_4_weeks(X: pd.DataFrame) -> pd.DataFrame:
     )
     return X
 
-def latitude_and_longitude(X: pd.DataFrame) -> pd.DataFrame:
+def latitude_and_longitude_anterior(X: pd.DataFrame) -> pd.DataFrame: #version anterior de la funcion, la modifique por la de abajo para que solo sea consulta a feature store
     """
     Adds two columns with the latitude and longitude from pickup_location_id
     
@@ -47,6 +50,29 @@ def latitude_and_longitude(X: pd.DataFrame) -> pd.DataFrame:
     #X.drop('pickup_location_id', axis=1, inplace=True)
 
     return X
+
+def latitude_and_longitude(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds two columns with the latitude and longitude from pickup_location_id
+    
+    """
+
+    #primero me conecto al feature store para obtenerla y luego la uno al dataset
+    
+    feature_store = get_feature_store()
+    feature_view = feature_store.get_feature_view(
+        name=config.FEATURE_VIEW_LAT_LONG
+    )
+    raw_data_rides= feature_view.get_batch_data()
+
+    # Combinar la información de latitud y longitud en X
+    X = X.merge(raw_data_rides, on='pickup_location_id', how='left')
+
+    # Eliminar la columna 'pickup_location_id'
+    #X.drop('pickup_location_id', axis=1, inplace=True)
+
+    return X
+
 
 
 class TemporalFeaturesEngineer(BaseEstimator, TransformerMixin):

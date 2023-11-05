@@ -19,6 +19,12 @@ FEATURE_VIEW_VERSION = 1
 MODEL_NAME = "bike_demand_predictor_next_hour"
 MODEL_VERSION = 1
 
+#Agrego esto para que se consulte al feature store la latitud y longitud
+FEATURE_GROUP_LAT_LONG = 'latitud_y_longitud_group' 
+FEATURE_VIEW_LAT_LONG = 'latitud_y_longitud_view'
+#FEATURE_VIEW_LAT_LONG_VERSION = 1
+
+
 # added for monitoring purposes
 FEATURE_GROUP_MODEL_PREDICTIONS = 'model_predictions_feature_group'
 FEATURE_VIEW_MODEL_PREDICTIONS = 'model_predictions_feature_view'
