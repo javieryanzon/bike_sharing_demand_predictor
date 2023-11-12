@@ -107,6 +107,8 @@ with st.spinner(text="Fetching model predictions from the store"):
         to_pickup_hour=current_date
         )
     predictions_df = predictions_df.reset_index(drop=True)
+    #predictions_df=predictions_df.set_index("pickup_location_id")
+    #predictions_df.index.name = None
     st.sidebar.write('✅ Model predictions arrived')
     progress_bar.progress(2/N_STEPS)
 
@@ -195,6 +197,8 @@ with st.spinner(text="Generating BsAs Map"):
 with st.spinner(text="Fetching batch of features used in the last run"):
     features_df = _load_batch_of_features_from_store(current_date)
     features_df=features_df.reset_index(drop=True)
+    #features_df=features_df.set_index("pickup_location_id")
+    #features_df.index.name = None
     st.sidebar.write('✅ Inference features fetched from the store')
     progress_bar.progress(5/N_STEPS)
 
@@ -209,6 +213,8 @@ with st.spinner(text="Plotting time-series data"):
 
     # Selecciona las 10 filas principales 
     top_10_indices = sorted_indices[:10]
+    #st.sidebar.write(top_10_indices)
+    #st.sidebar.write(len(predictions_df))
 
 
     # plot each time-series with the prediction 
@@ -218,8 +224,8 @@ with st.spinner(text="Plotting time-series data"):
                 example_id=row_id,
                 features=features_df,
                 targets=predictions_df,
-                predictions=predictions_df,
-                directions=geo_df[['ID', 'DIRECCION']]
+                predictions=predictions_df
+                #directions=geo_df[['ID', 'DIRECCION']]
             )
             st.plotly_chart(fig, theme="streamlit", use_container_width=True, width=1000)
 
