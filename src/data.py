@@ -250,7 +250,6 @@ def transform_raw_data_into_ts_data(
     rides['pickup_hour'] = rides['pickup_datetime'].dt.floor('H')
     agg_rides = rides.groupby(['pickup_hour', 'pickup_location_id']).size().reset_index()
     agg_rides.rename(columns={0: 'rides'}, inplace=True)
-
     # add rows for (locations, pickup_hours)s with 0 rides
     agg_rides_all_slots = add_missing_slots(agg_rides)
 
@@ -373,3 +372,68 @@ def get_cutoff_indices_features_and_target(
             subseq_last_idx += step_size
 
         return indices
+
+#Agrego esto para transformar cualquier dataset a algo comparable con las predicciones
+def transform_ts_data_into_dataset_comparable_with_predictions(
+    ts_data: pd.DataFrame,
+    input_seq_len: int,
+    step_size: int,
+    output_seq_len: int #Lo que agregué nuevo
+) -> pd.DataFrame:
+    """
+    Slices and transposes data from time-series format into a (features, target)
+    format that we can use to train Supervised ML models
+    """
+    assert set(ts_data.columns) == {'pickup_hour', 'rides', 'pickup_location_id'}
+
+    location_ids = ts_data['pickup_location_id'].unique()
+    #features = pd.DataFrame()
+    targets = pd.DataFrame()
+    
+    for location_id in tqdm(location_ids):
+        
+        # keep only ts data for this `location_id`
+        ts_data_one_location = ts_data.loc[
+            ts_data.pickup_location_id == location_id, 
+            ['pickup_hour', 'rides']
+        ].sort_values(by=['pickup_hour'])
+
+        # pre-compute cutoff indices to split dataframe rows
+        indices = get_cutoff_indices_features_and_target(
+            ts_data_one_location,
+            input_seq_len,
+            step_size,
+            output_seq_len #Lo que agregué nuevo
+        )
+
+        # slice and transpose data into numpy arrays for features and targets
+        n_examples = len(indices)
+        #x = np.ndarray(shape=(n_examples, input_seq_len), dtype=np.float32)
+        y = np.ndarray(shape=(n_examples, output_seq_len), dtype=np.float32) #Agregué el (output_seq_len) porque quiero esa cantidad de horas
+        pickup_hours = []
+        for i, idx in enumerate(indices):
+            #x[i, :] = ts_data_one_location.iloc[idx[0]:idx[1]]['rides'].values
+            y[i] = ts_data_one_location.iloc[idx[1]:idx[2]]['rides'].values
+            pickup_hours.append(ts_data_one_location.iloc[idx[1]]['pickup_hour'])
+
+        # numpy -> pandas
+        # features_one_location = pd.DataFrame(
+        #     x,
+        #     columns=[f'rides_previous_{i+1}_hour' for i in reversed(range(input_seq_len))]
+        # )
+        # features_one_location['pickup_hour'] = pickup_hours
+        # features_one_location['pickup_location_id'] = location_id
+
+        # numpy -> pandas
+        targets_one_location = pd.DataFrame(y, columns=[f'real_rides_next_{i+1}_hour' for i in range(output_seq_len)])
+        targets_one_location['pickup_hour'] = pickup_hours
+        targets_one_location['pickup_location_id'] = location_id    
+
+        # concatenate results
+        #features = pd.concat([features, features_one_location])
+        targets = pd.concat([targets, targets_one_location])
+
+    #features.reset_index(inplace=True, drop=True)
+    targets.reset_index(inplace=True, drop=True)
+
+    return targets #['target_rides_next_hour'] #features, 
