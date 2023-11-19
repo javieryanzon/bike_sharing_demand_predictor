@@ -209,6 +209,8 @@ with st.spinner(text="Plotting time-series data"):
 
     predictions_df['max'] = predictions_df[selected_columns].max(axis=1) 
     sorted_indices = predictions_df['max'].sort_values(ascending=False).index
+    predictions_max = predictions_df.copy()
+    predictions_max['max_hour'] = predictions_max[selected_columns].idxmax(axis=1)
     predictions_df = predictions_df.drop('max', axis=1)
 
     # Selecciona las 10 filas principales 
@@ -216,10 +218,21 @@ with st.spinner(text="Plotting time-series data"):
     #st.sidebar.write(top_10_indices)
     #st.sidebar.write(len(predictions_df))
 
-
     # plot each time-series with the prediction 
     for row_id in top_10_indices:
         #if row_id < len(predictions_df):
+            # title
+            location_id = df['pickup_location_id'].iloc[row_id]
+            location_name = df['DIRECCION'].iloc[row_id]
+            st.header(f'Direction: {location_id} - {location_name}')
+
+            # plot predictions
+            prediction = predictions_max['max'].iloc[row_id] #df['color_scaling'].iloc[row_id]
+            max_hour_prediction = predictions_max['max_hour'].iloc[row_id]
+            max_hour_prediction_int = int(max_hour_prediction.replace('rides_next_', '').replace('_hour', ''))
+            st.metric(label="Max bikes predicted in 36 hours", value=int(prediction))
+            st.metric(label="Approximate Hour of max prediction", value=str(pd.to_datetime(current_date + timedelta(hours=max_hour_prediction_int), utc=True)))
+
             fig = plot_one_sample(
                 example_id=row_id,
                 features=features_df,
