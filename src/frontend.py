@@ -21,8 +21,9 @@ st.set_page_config(layout="wide")
 # title
 # current_date = datetime.strptime('2023-01-05 12:00:00', '%Y-%m-%d %H:%M:%S')
 current_date = pd.to_datetime(datetime.utcnow(), utc=True).floor('H')
+current_date_str = str(current_date.strftime('%Y-%m-%d %H:%M'))
 st.title(f'Bike demand prediction 🚲')
-st.header(f'{current_date} UTC')
+st.header(f'{current_date_str} UTC')
 
 progress_bar = st.sidebar.header('⚙️ Working Progress')
 progress_bar = st.sidebar.progress(0)
@@ -230,8 +231,9 @@ with st.spinner(text="Plotting time-series data"):
             prediction = predictions_max['max'].iloc[row_id] #df['color_scaling'].iloc[row_id]
             max_hour_prediction = predictions_max['max_hour'].iloc[row_id]
             max_hour_prediction_int = int(max_hour_prediction.replace('rides_next_', '').replace('_hour', ''))
-            st.metric(label="Max bikes predicted in 36 hours", value=int(prediction))
-            st.metric(label="Approximate Hour of max prediction", value=str(pd.to_datetime(current_date + timedelta(hours=max_hour_prediction_int), utc=True)))
+            max_hour_prediction_str =str(pd.to_datetime(current_date + timedelta(hours=max_hour_prediction_int-1), utc=True).strftime('%Y-%m-%d %H:%M'))+ " UTC " + " - " + str(pd.to_datetime(current_date + timedelta(hours=max_hour_prediction_int), utc=True).strftime('%Y-%m-%d %H:%M') + " UTC")
+            st.metric(label="Max rides predicted in 36 hours", value=int(prediction))
+            st.metric(label="Approximate Hour of max prediction", value=max_hour_prediction_str)
 
             fig = plot_one_sample(
                 example_id=row_id,
