@@ -219,6 +219,17 @@ with st.spinner(text="Plotting time-series data"):
     #st.sidebar.write(top_10_indices)
     #st.sidebar.write(len(predictions_df))
 
+    # Agregar un botón de descarga en la esquina superior derecha
+    df_to_download = df.copy().drop(['QUEDA_ABIE','EMPLAZAMIE','ANCLAJES','max_hour','color_scaling','fill_color'], axis=1) #pd.merge(features_df, predictions_df, on=['pickup_hour', 'pickup_location_id'], how='left')
+    button = st.download_button(
+    label="Download predictions CSV",
+    data=df_to_download.to_csv(index=False).encode('utf-8'),
+    file_name='predictions.csv',
+    key='download_button'
+    )
+
+    st.markdown("<div style='text-align: left; font-size: small;'>Note: Do not use this data for operational purposes. As data is updated monthly, the last hours data are not available. Therefore, a travel simulation is carried out and is taken as certain from which forecasts are made.</div>", unsafe_allow_html=True)
+
     # plot each time-series with the prediction 
     for row_id in top_10_indices:
         #if row_id < len(predictions_df):
