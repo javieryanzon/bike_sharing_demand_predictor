@@ -20,7 +20,7 @@ st.set_page_config(layout="wide")
 
 # title
 # current_date = datetime.strptime('2023-01-05 12:00:00', '%Y-%m-%d %H:%M:%S')
-current_date = pd.to_datetime(datetime.utcnow(), utc=True).floor('H')
+current_date = pd.to_datetime(datetime.utcnow(), utc=True).floor('H') # - timedelta(hours=1)
 current_date_str = str(current_date.strftime('%Y-%m-%d %H:%M'))
 st.title(f'Bike demand prediction 🚲')
 st.header(f'{current_date_str} UTC')
@@ -104,7 +104,7 @@ with st.spinner(text="Downloading shape file to plot bike stations"):
 
 with st.spinner(text="Fetching model predictions from the store"):
     predictions_df = _load_predictions_from_store(
-        from_pickup_hour=current_date - timedelta(hours=1),
+        from_pickup_hour=current_date - timedelta(hours=3),
         to_pickup_hour=current_date
         )
     predictions_df = predictions_df.reset_index(drop=True)
@@ -115,21 +115,40 @@ with st.spinner(text="Fetching model predictions from the store"):
 
 # Here we are checking the predictions for the current hour have already been computed
 # and are available
-next_hour_predictions_ready = \
-    False if predictions_df[predictions_df.pickup_hour == current_date].empty else True
-prev_hour_predictions_ready = \
-    False if predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=1))].empty else True
 
-if next_hour_predictions_ready:
-    # predictions for the current hour are available
-    predictions_df = predictions_df[predictions_df.pickup_hour == current_date]
-elif prev_hour_predictions_ready:
-    # predictions for current hour are not available, so we use previous hour predictions
+# next_hour_predictions_ready = \
+#     False if predictions_df[predictions_df.pickup_hour == current_date].empty else True
+prev_1_hour_predictions_ready = \
+    False if predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=1))].empty else True
+prev_2_hour_predictions_ready = \
+    False if predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=2))].empty else True
+prev_3_hour_predictions_ready = \
+    False if predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=3))].empty else True
+
+# if next_hour_predictions_ready:
+#     # predictions for the current hour are available
+#     predictions_df = predictions_df[predictions_df.pickup_hour == current_date]
+#     st.subheader('The most recent data is not yet available. Using last hour predictions')
+                                 
+if prev_1_hour_predictions_ready:
+    # predictions for current hour sometimes makes a mistake, so we use previous hour predictions -1
     predictions_df = predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=1))]
     current_date = current_date - timedelta(hours=1)
-    st.subheader('⚠️ The most recent data is not yet available. Using last hour predictions')
+    st.subheader('The most recent data is not available. Using last 1 hour predictions')
+
+elif prev_2_hour_predictions_ready:
+    # predictions for hour -1 are not available, so we use previous hour predictions -2
+    predictions_df = predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=2))]
+    current_date = current_date - timedelta(hours=2)
+    st.subheader('⚠️ The most recent data is not yet available. Using last 2 hour predictions')
+
+elif prev_3_hour_predictions_ready:
+    # predictions for hour -2 are not available, so we use previous hour predictions -3
+    predictions_df = predictions_df[predictions_df.pickup_hour == (current_date - timedelta(hours=3))]
+    current_date = current_date - timedelta(hours=3)
+    st.subheader('⚠️ The most recent data is not yet available. Using last 3 hour predictions')
 else:
-    raise Exception('Features are not available for the last 2 hours. Is your feature \
+    raise Exception('Features are not available for the last 4 hours. Is your feature \
                     pipeline up and running? 🤔')
 
 
@@ -184,7 +203,7 @@ with st.spinner(text="Generating BsAs Map"):
                           coverage=1)
     
 
-    tooltip = {"html": "<b>Zone:</b> [{ID} - {DIRECCION}] <br /> <b>Max: </b> {color_scaling} rides - {max_hour}"}
+    tooltip = {"html": "<b>Zone ID:</b> {ID} <br /> <b>Direction:</b> {DIRECCION} <br /> <b>Max: </b> {color_scaling} rides - {max_hour}"}
 
     r = pdk.Deck(
         layers=[layer],
@@ -234,9 +253,17 @@ with st.spinner(text="Plotting time-series data"):
     for row_id in top_10_indices:
         #if row_id < len(predictions_df):
             # title
-            location_id = df['pickup_location_id'].iloc[row_id]
-            location_name = df['DIRECCION'].iloc[row_id]
-            st.header(f'Direction: {location_id} - {location_name}')
+            location_id = features_df['pickup_location_id'].iloc[row_id] 
+            location_name = df[df['pickup_location_id'] == location_id]['DIRECCION'].iloc[0]
+            
+
+            # location_id = df['pickup_location_id'].iloc[row_id]
+            # location_name = df['DIRECCION'].iloc[row_id]
+            #location_name = df['DIRECCION'].iloc[df['pickup_location_id'] == location_id]         
+            #location_name = df['DIRECCION'].iloc[row_id]
+            #st.header(f'Direction: {location_id} - {location_name}')
+            
+            st.header(f'Direction: {location_name} [Zone ID: {location_id}]')
 
             # plot predictions
             prediction = predictions_max['max'].iloc[row_id] #df['color_scaling'].iloc[row_id]
