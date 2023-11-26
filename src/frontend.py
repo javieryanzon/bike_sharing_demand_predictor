@@ -227,7 +227,8 @@ with st.spinner(text="Plotting time-series data"):
     predictions_df = np.clip(predictions_df[selected_columns], 0, None) #Hago esto para limitar los valores a cero y que no de ninguno negativo 
     
 
-    predictions_df['max'] = predictions_df[selected_columns].max(axis=1) 
+    predictions_df['max'] = predictions_df[selected_columns].max(axis=1)
+    predictions_df = predictions_df.reset_index(drop=True) 
     sorted_indices = predictions_df['max'].sort_values(ascending=False).index
     predictions_max = predictions_df.copy()
     predictions_max['max_hour'] = predictions_max[selected_columns].idxmax(axis=1)
