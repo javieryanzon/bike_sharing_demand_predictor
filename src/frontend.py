@@ -76,26 +76,27 @@ def _load_batch_of_features_from_store(current_date: datetime) -> pd.DataFrame:
     """
     return load_batch_of_features_from_store(current_date)
 
-@st.cache_data
-def _load_predictions_from_store(
-    from_pickup_hour: datetime,
-    to_pickup_hour: datetime
-    ) -> pd.DataFrame:
-    """
-    Wrapped version of src.inference.load_predictions_from_store, so we
-    can add Streamlit caching
+#Quité esto a ver si se soluciona error de cache data inicial
+# @st.cache_data
+# def _load_predictions_from_store(
+#     from_pickup_hour: datetime,
+#     to_pickup_hour: datetime
+#     ) -> pd.DataFrame:
+#     """
+#     Wrapped version of src.inference.load_predictions_from_store, so we
+#     can add Streamlit caching
 
-    Args:
-        from_pickup_hour (datetime): min datetime (rounded hour) for which we want to get
-        predictions
+#     Args:
+#         from_pickup_hour (datetime): min datetime (rounded hour) for which we want to get
+#         predictions
 
-        to_pickup_hour (datetime): max datetime (rounded hour) for which we want to get
-        predictions
+#         to_pickup_hour (datetime): max datetime (rounded hour) for which we want to get
+#         predictions
 
-    Returns:
-        pd.DataFrame: 2 columns: pickup_location_id, predicted_demand
-    """
-    return load_predictions_from_store(from_pickup_hour, to_pickup_hour)
+#     Returns:
+#         pd.DataFrame: 2 columns: pickup_location_id, predicted_demand
+#     """
+#     return load_predictions_from_store(from_pickup_hour, to_pickup_hour)
 
 with st.spinner(text="Downloading shape file to plot bike stations"):
     geo_df = load_shape_data_file()
@@ -103,7 +104,7 @@ with st.spinner(text="Downloading shape file to plot bike stations"):
     progress_bar.progress(1/N_STEPS)
 
 with st.spinner(text="Fetching model predictions from the store"):
-    predictions_df = _load_predictions_from_store(
+    predictions_df = load_predictions_from_store(   #Le quité el _ para que no sea con cache data a ver si se soluciona el error incial
         from_pickup_hour=current_date - timedelta(hours=3),
         to_pickup_hour=current_date
         )
