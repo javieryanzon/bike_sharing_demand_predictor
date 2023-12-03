@@ -52,7 +52,7 @@
 
  4. También tenemos otros archivos en las carpeta src. En ellas hay distintas funciones que se utilizan en los distintos notebooks para no tener que repetir la función. Por tanto sólo con importarla ya se puede utilizar. Además dentro de esa carpeta están los dos tableros que ahora comentaré:
     - El primer tablero es el de frontend el cual consulta al feature store y carga los datos previos y las predicciones correspondientes. Además se grafica un mapa en el que se puede ver la estación que tendrá más demanda en las próximas 36 horas (en la descripción está la demanda esperada y la hora). Luego más abajo se encontrarán los gráficos que del top 10 de estaciones con la máxima demanda.
-    - El segundo tabledo es el de frontend monitoring en el que se puede observar el error global y el erro de las estaciones con mayor demanda.
+    - El segundo tabledo es el de frontend monitoring en el que se puede observar el error global y el error de las estaciones con mayor demanda.
 
 ## Tableros
 - [Dashboard con predicciones del modelo📈](https://bike-sharing-demand-predictor-ecobici.streamlit.app/)
@@ -60,7 +60,6 @@
 
  <br />
  PD1: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
- 
  PD2: En caso de que al abrir los tableros aparezca un error, volver a cargar la página para solucionarlo.
 
 <br />
