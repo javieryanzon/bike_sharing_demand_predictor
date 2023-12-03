@@ -58,9 +58,9 @@
 - [Dashboard con predicciones del modelo📈](https://bike-sharing-demand-predictor-ecobici.streamlit.app/)
 - [Dashboard con monitorización de errores del modelo🔍](https://bike-sharing-mae-error-monitoring.streamlit.app/)
 
-
  PD: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
 
+<br />
 <div align="center">
     <i>Gracias por leer. Sigamos en contacto por redes sociales🙌🏻</i>
     <br />
