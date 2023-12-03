@@ -62,10 +62,10 @@
  PD: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
 
 <div align="center">
-    <sub>Gracias por leer. Sigamos en contacto por redes sociales🙌🏻</i>
+    <i>Gracias por leer. Sigamos en contacto por redes sociales🙌🏻</i>
     <br />
     <a href="https://twitter.com/javieryanzon">Twitter</a> •
-    <a href="www.linkedin.com/in/javieryanzon">LinkedIn</a> •
+    <a href="www.linkedin.com/in/javieryanzon">LinkedIn</a>
 <br />
 </div>
 
