@@ -103,20 +103,19 @@ with st.spinner(text="Downloading shape file to plot bike stations"):
     st.sidebar.write('✅ Shape file was downloaded ')
     progress_bar.progress(1/N_STEPS)
 
-#with st.spinner(text="Fetching model predictions from the store"):
-    # predictions_df = _load_predictions_from_store(   
-    #     from_pickup_hour=current_date - timedelta(hours=3),
-    #     to_pickup_hour=current_date
-    #     )
-    # predictions_df = predictions_df.reset_index(drop=True)
-    # #predictions_df=predictions_df.set_index("pickup_location_id")
-    # #predictions_df.index.name = None
-    # st.sidebar.write('✅ Model predictions arrived')
-    # progress_bar.progress(2/N_STEPS)
+# with st.spinner(text="Fetching model predictions from the store"):
+#     predictions_df = _load_predictions_from_store(   
+#         from_pickup_hour=current_date - timedelta(hours=3),
+#         to_pickup_hour=current_date
+#         )
+#     predictions_df = predictions_df.reset_index(drop=True)
+#     #predictions_df=predictions_df.set_index("pickup_location_id")
+#     #predictions_df.index.name = None
+#     st.sidebar.write('✅ Model predictions arrived')
+#     progress_bar.progress(2/N_STEPS)
 
-while True:
-        try:
-            with st.spinner(text="Fetching model predictions from the store"):
+try:
+    with st.spinner(text="Fetching model predictions from the store"):
                 predictions_df = _load_predictions_from_store(   
                     from_pickup_hour=current_date - timedelta(hours=3),
                     to_pickup_hour=current_date
@@ -125,14 +124,19 @@ while True:
                 st.sidebar.write('✅ Model predictions arrived')
                 progress_bar.progress(2/N_STEPS)
 
-                # Si llegamos aquí sin errores, salimos del bucle
-                break
-        except Exception as e:
-            # Captura el error
-            st.error(f"An error occurred: {str(e)}")
-
-            # Intenta nuevamente
-            st.warning(f"Retrying...")
+except Exception as e:
+    # Captura el error
+    st.error(f"An error occurred: {str(e)}")
+    # Intenta nuevamente
+    st.warning(f"Retrying...")
+    with st.spinner(text="Fetching model predictions from the store"):
+                predictions_df = _load_predictions_from_store(   
+                    from_pickup_hour=current_date - timedelta(hours=3),
+                    to_pickup_hour=current_date
+                )
+                predictions_df = predictions_df.reset_index(drop=True)
+                st.sidebar.write('✅ Model predictions arrived')
+                progress_bar.progress(2/N_STEPS)
 
 
 # Here we are checking the predictions for the current hour have already been computed
