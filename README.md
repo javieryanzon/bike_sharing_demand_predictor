@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>Bikesharing demand predictor service🚲🚛📊</h1>
+    <h1>Bike sharing demand predictor service🚲🚛📊</h1>
     <i>Proyecto final🚀</i>
 </div>
 
