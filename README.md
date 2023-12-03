@@ -8,7 +8,7 @@
 ## Predictor de demanda
 1. El siguiente proyecto es un predictor de la demanda de un sistema de bikesharing. Está planteado como un proyecto final del Máster de Data Science de Nodd3r. Les comparto su [web](https://nodd3r.com/) y agradezco especialmente a Christian Donaire que me ayudó mucho en todo este proceso de aprendizaje.
 
-    También cabe destacar que, este trabajo ha sido inspirado en el curso de [Pau Labarta Bajo](https://github.com/Paulescu) en el que se contruye un predictor de demanda del servicio de taxi de Nueva York. Muchas funciones y estructuras salen de allí. He aprendido mucho con ese [curso](https://www.realworldml.xyz/a/2147729293/gHLFS4dL) lo super recomiendo.
+    También cabe destacar que, este trabajo ha sido inspirado en el [curso](https://www.realworldml.xyz/a/2147729293/gHLFS4dL) de [Pau Labarta Bajo](https://github.com/Paulescu) en el que se contruye un predictor de demanda del servicio de taxi de Nueva York. Muchas funciones y estructuras salen de allí. Yo he aprendido mucho lo super recomiendo.
 
 2. ¿Que es un sistema de bikesharing? Es el sistema de bicicletas de modalidad compartidas, es decir que cada ciudadano puede usarlas y luego dejarlas en estaciones que específicas para ello. Estos sistemas están presentes en distintas ciudades. En el siguiente proyecto se hará un prototipo de predicción de demanda para planificar donde deberían haber más bicicletas en determinadas horas.
 
@@ -58,7 +58,8 @@
 - [Dashboard con predicciones del modelo📈](https://bike-sharing-demand-predictor-ecobici.streamlit.app/)
 - [Dashboard con monitorización de errores del modelo🔍](https://bike-sharing-mae-error-monitoring.streamlit.app/)
 
- PD: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
+ PD1: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
+ PD2: En caso de que al abrir los tableros aparezca un error, volver a cargar la página para solucionarlo.
 
 <br />
 <div align="center">
