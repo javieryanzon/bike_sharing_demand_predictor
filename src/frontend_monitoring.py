@@ -44,22 +44,43 @@ def _load_predictions_and_actuals_from_store(
     """
     return load_predictions_and_actual_values_from_store(from_date, to_date)
 
-with st.spinner(text="Fetching model predictions and actual values from the store"):
+# with st.spinner(text="Fetching model predictions and actual values from the store"):
     
-    ts_data_1, ts_data_2 = _load_predictions_and_actuals_from_store(
-        from_date=current_date - timedelta(days=14),
-        to_date=current_date
-    )
-    
-    real_rides = transform_ts_data_into_dataset_comparable_with_predictions(
-    ts_data_2,
-    input_seq_len=0, # one month
-    step_size=24,
-    output_seq_len=36
-)
-    st.sidebar.write('✅ Model predictions and actual values arrived')
-    progress_bar.progress(1/N_STEPS)
+#     ts_data_1, ts_data_2 = _load_predictions_and_actuals_from_store(
+#         from_date=current_date - timedelta(days=14),
+#         to_date=current_date
+#     )
+    # real_rides = transform_ts_data_into_dataset_comparable_with_predictions(
+    # ts_data_2,
+    # input_seq_len=0, # one month
+    # step_size=24,
+    # output_seq_len=36
+    # )
+    # st.sidebar.write('✅ Model predictions and actual values arrived')
+    # progress_bar.progress(1/N_STEPS)
 
+while True:
+        try:
+            with st.spinner(text="Fetching model predictions and actual values from the store"):
+                ts_data_1, ts_data_2 = _load_predictions_and_actuals_from_store(
+                from_date=current_date - timedelta(days=14),
+                to_date=current_date
+                )
+                real_rides = transform_ts_data_into_dataset_comparable_with_predictions(
+                ts_data_2,
+                input_seq_len=0, # one month
+                step_size=24,
+                output_seq_len=36
+                )
+                st.sidebar.write('✅ Model predictions and actual values arrived')
+                progress_bar.progress(1/N_STEPS)
+                break
+        except Exception as e:
+            # Captura el error
+            st.error(f"An error occurred: {str(e)}")
+
+            # Intenta nuevamente
+            st.warning(f"Retrying...")
 
 with st.spinner(text="Plotting aggregate MAE hour-by-hour"):
 
