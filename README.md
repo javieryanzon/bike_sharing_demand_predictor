@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>Bikesharing demand predictor service🚲🚛📈</h1>
+    <h1>Bikesharing demand predictor service🚲🚛📊</h1>
     <i>Proyecto final🚀</i>
 </div>
 
@@ -65,7 +65,7 @@
     <i>Gracias por leer. Sigamos en contacto por redes sociales🙌🏻</i>
     <br />
     <a href="https://twitter.com/javieryanzon">Twitter</a> •
-    <a href="www.linkedin.com/in/javieryanzon">LinkedIn</a>
+    <a href="https://www.linkedin.com/in/javieryanzon">LinkedIn</a>
 <br />
 </div>
 
