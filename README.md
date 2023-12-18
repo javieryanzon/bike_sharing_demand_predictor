@@ -8,7 +8,7 @@
 <p align="center">
 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDdmbjN5dzhwMDVyMjNoMTVxZHR0Njk5a3VhMjcxcHN1Mngycm15bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xrZI315r8OorAq7IZs/giphy.gif" width="750" align="center">
 </p>
-
+ 
 ## Predictor de demanda
 1. El siguiente proyecto es un predictor de la demanda de un sistema de bikesharing. Está planteado como un proyecto final del Máster de Data Science de Nodd3r. Les comparto su [web](https://nodd3r.com/) y agradezco especialmente a Christian Donaire que me ayudó mucho en todo este proceso de aprendizaje.
 
