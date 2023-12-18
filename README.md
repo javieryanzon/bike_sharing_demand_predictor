@@ -6,7 +6,7 @@
 <br />
 
 <p align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDdmbjN5dzhwMDVyMjNoMTVxZHR0Njk5a3VhMjcxcHN1Mngycm15bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xrZI315r8OorAq7IZs/giphy.gif" width="250" align="center">
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDdmbjN5dzhwMDVyMjNoMTVxZHR0Njk5a3VhMjcxcHN1Mngycm15bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xrZI315r8OorAq7IZs/giphy.gif" width="750" align="center">
 </p>
 
 ## Predictor de demanda
