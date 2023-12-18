@@ -5,15 +5,9 @@
 
 <br />
 
-<p align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXh6ajJvaHZ4ZWlidmpqaWV6amY0ejJvcDBuNjN6ZXZzemllaThkNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0Bw3NBLM3mMmzILD7x/giphy.gif" width="500" align="center">
-</p>
 
-<br />
 
-<p align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHBxcjl4cno0eW5wc211ZXhtYWIwdTljYXp3Y3V0bHplcnB2MzZzOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B6CSUxVP4r35Qr0MCI/giphy.gif" width="500" align="center">
-</p>
+
 
 ## Predictor de demanda
 1. El siguiente proyecto es un predictor de la demanda de un sistema de bikesharing. Está planteado como un proyecto final del Máster de Data Science de Nodd3r. Les comparto su [web](https://nodd3r.com/) y agradezco especialmente a Christian Donaire que me ayudó mucho en todo este proceso de aprendizaje.
@@ -66,7 +60,18 @@
 
 ## Tableros
 - [Dashboard con predicciones del modelo📈](https://bike-sharing-demand-predictor-ecobici.streamlit.app/)
+
+<br />
+<p align="center">
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXh6ajJvaHZ4ZWlidmpqaWV6amY0ejJvcDBuNjN6ZXZzemllaThkNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0Bw3NBLM3mMmzILD7x/giphy.gif" width="500" align="center">
+</p>
+
 - [Dashboard con monitorización de errores del modelo🔍](https://bike-sharing-mae-error-monitoring.streamlit.app/)
+
+<br />
+<p align="center">
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHBxcjl4cno0eW5wc211ZXhtYWIwdTljYXp3Y3V0bHplcnB2MzZzOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B6CSUxVP4r35Qr0MCI/giphy.gif" width="500" align="center">
+</p>
 
  <br />
  PD1: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
