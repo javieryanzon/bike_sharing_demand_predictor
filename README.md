@@ -68,11 +68,11 @@
 
 - [Dashboard con monitorización de errores del modelo🔍](https://bike-sharing-mae-error-monitoring.streamlit.app/)
 
-<br />
 <p align="center">
 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHBxcjl4cno0eW5wc211ZXhtYWIwdTljYXp3Y3V0bHplcnB2MzZzOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B6CSUxVP4r35Qr0MCI/giphy.gif" width="500" align="center">
 </p>
 
+ <br />
  PD1: Cabe destacar que no se tiene acceso a los datos reales de la última hora. Por tanto para salvar eso, lo que se hace es una simulación de consulta en la que se obtienen datos de otro año que simulan ser la última hora, para luego incluirlos en la base de datos.
 
  PD2: En caso de que al abrir los tableros aparezca un error, volver a cargar la página para solucionarlo.
