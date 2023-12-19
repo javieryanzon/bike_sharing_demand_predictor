@@ -80,7 +80,7 @@
 
 <br />
 <div align="center">
-    <i>Gracias por leer. Sigamos en contacto por redes sociales🙌🏻</i>
+    <i>Gracias por leer. Sigamos en contacto🙌🏻</i>
     <br />
     <a href="https://twitter.com/javieryanzon">Twitter</a> •
     <a href="https://www.linkedin.com/in/javieryanzon">LinkedIn</a>
