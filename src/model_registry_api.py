@@ -19,9 +19,9 @@ logger = get_logger()
 # load variables from .env file as environment variables
 load_dotenv(PARENT_DIR / '.env')
 
-# COMET_ML_API_KEY = os.environ["COMET_ML_API_KEY"]
-# COMET_ML_WORKSPACE = os.environ["COMET_ML_WORKSPACE"]
-# COMET_ML_PROJECT_NAME = os.environ['COMET_ML_PROJECT_NAME']
+COMET_ML_API_KEY = os.environ["COMET_ML_API_KEY"]
+COMET_ML_WORKSPACE = os.environ["COMET_ML_WORKSPACE"]
+COMET_ML_PROJECT_NAME = os.environ['COMET_ML_PROJECT_NAME']
 
 
 def get_model_registry() -> None:
