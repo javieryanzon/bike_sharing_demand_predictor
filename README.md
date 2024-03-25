@@ -51,7 +51,7 @@
  3. En el notebook 11, 12, 13 y 14:
     - Se creó el proyecto en Hopsworks (feature store). Lo cual nos permite ir guardando los distintos registros que se descargan. Para ello se debe crear un feature group en el que guardarlo y luego para poder consumirlo es más cómodo mediante un feature view. Para ello se van creando este tipo de figuras para poder guardar los datos.
     - El notebook 12 básicamente lo que realiza es: descarga los datos de la web del Gobierno de Bs As, realiza una limpieza y lo sube al feature store. Para automatizar esto se utilizó un github action que se ejecuta cada hora.
-    - En el notebook 13 se obtiene el modelo, se guarda y se sube a hopsworks (que luego se lo utilizará para realizar las predicciones).
+    - En el notebook 13 se obtiene el modelo, se guarda y se sube a CometML (que luego se lo utilizará para realizar las predicciones).
     - En el notebook 14 se leen los distintos datos del feature store, se carga el modelo, se crean las predicciones y se las guarda en el feature store. Para automatizarlo se creo otra github action que se ejecuta inmediatamente después de que termina la otra github action.
 
  4. También tenemos otros archivos en las carpeta src. En ellas hay distintas funciones que se utilizan en los distintos notebooks para no tener que repetir la función. Por tanto sólo con importarla ya se puede utilizar. Además dentro de esa carpeta están los dos tableros que ahora comentaré:
