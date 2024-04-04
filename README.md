@@ -12,7 +12,7 @@
 ## Predictor de demanda
 1. El siguiente proyecto es un predictor de la demanda de un sistema de bikesharing. Está planteado como un proyecto final del Máster de Data Science de Nodd3r. Les comparto su [web](https://nodd3r.com/) y agradezco especialmente a Christian Donaire que me ayudó mucho en todo este proceso de aprendizaje.
 
-    También cabe destacar que este proyecto ha sido inspirado en el [curso](https://www.realworldml.net/a/2147729293/gHLFS4dL) de [Pau Labarta Bajo](https://github.com/Paulescu) en el que se contruye un predictor de demanda del servicio de taxi de Nueva York.
+    También cabe destacar que este proyecto ha sido inspirado en el [curso](https://bit.ly/MLcourse_plb) de [Pau Labarta Bajo](https://github.com/Paulescu) en el que se contruye un predictor de demanda del servicio de taxi de Nueva York.
 
 2. ¿Que es un sistema de bikesharing? Es el sistema de bicicletas de modalidad compartidas, es decir que cada ciudadano puede usarlas y luego dejarlas en estaciones específicas para ello. Estos sistemas están presentes en distintas ciudades. En el siguiente proyecto se hará un prototipo de predicción de demanda para planificar donde deberían haber más bicicletas en determinadas horas.
 
