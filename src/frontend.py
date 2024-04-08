@@ -23,6 +23,19 @@ st.set_page_config(layout="wide")
 current_date = pd.to_datetime(datetime.utcnow(), utc=True).floor('H') # - timedelta(hours=1)
 current_date_str = str(current_date.strftime('%Y-%m-%d %H:%M'))
 st.title(f'Bike demand prediction 🚲')
+# Crear el encabezado con HTML
+mensaje_personalizado = "Made by Javier Yanzón. Let's connect🙌🏻"
+
+# Enlaces a tus redes sociales
+twitter_link = "https://twitter.com/javieryanzon"
+linkedin_link = "https://www.linkedin.com/in/javieryanzon"
+st.markdown(
+    f"<href>{mensaje_personalizado}</href>"
+    #f"<br />"
+    f" • <a href='{linkedin_link}'>LinkedIn</a> • "
+    f"<a href='{twitter_link}'>Twitter</a>",
+    unsafe_allow_html=True
+)
 st.header(f'{current_date_str} UTC')
 
 progress_bar = st.sidebar.header('⚙️ Working Progress')
