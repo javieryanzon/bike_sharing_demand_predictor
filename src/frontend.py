@@ -35,7 +35,7 @@ st.markdown(
     f" • <a href='{linkedin_link}'>LinkedIn</a> • "
     f"<a href='{twitter_link}'>Twitter</a>",
     unsafe_allow_html=True
-)
+) 
 st.header(f'{current_date_str} UTC')
 
 progress_bar = st.sidebar.header('⚙️ Working Progress')
