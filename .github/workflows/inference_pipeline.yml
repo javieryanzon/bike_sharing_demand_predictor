@@ -1,10 +1,10 @@
-name: hourly-bike-demand-inference-pipeline #inference-pipeline
+# name: hourly-bike-demand-inference-pipeline #inference-pipeline
 
-on:
-  workflow_run:
-    workflows: ["hourly-bike-demand-feature-pipeline"]  
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows: ["hourly-bike-demand-feature-pipeline"]  
+#     types:
+#       - completed
 
   workflow_dispatch:
 
