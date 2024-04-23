@@ -7,7 +7,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-hopsworks = {version = "3.4.2", python = ">=3.9,<3.11"}
 python-dotenv = "^1.0.0"
 jupyter = "^1.0.0"
 requests = "^2.31.0"
@@ -22,6 +21,7 @@ geopandas = "^0.14.0"
 streamlit = {version = "^1.28.0", python = ">=3.9,<3.9.7 || >3.9.7,<4.0"}
 pydeck = "^0.8.0"
 comet-ml = "^3.38.0"
+hopsworks = {version = "3.7.0", python = ">=3.9,<3.13"}
 
 
 [tool.poetry.group.dev.dependencies]
