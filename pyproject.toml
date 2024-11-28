@@ -22,6 +22,7 @@ streamlit = {version = "^1.28.0", python = ">=3.9,<3.9.7 || >3.9.7,<4.0"}
 pydeck = "^0.8.0"
 comet-ml = "^3.38.0"
 hopsworks = {version = "4.1.0", python = ">=3.9,<3.11"}
+confluent-kafka = "^2.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
