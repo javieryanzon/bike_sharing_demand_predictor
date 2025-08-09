@@ -1271,13 +1271,13 @@ protobuf = ["grpcio-tools (>=1.68.0)"]
 
 [[package]]
 name = "hopsworks"
-version = "4.1.0"
+version = "4.2.7"
 description = "Hopsworks Python SDK to interact with Hopsworks Platform, Feature Store, Model Registry and Model Serving"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "hopsworks-4.1.0-py3-none-any.whl", hash = "sha256:7868fde1de186d1b341edf4e842b4639fa36c151f537cb33923d3b8160b37124"},
-    {file = "hopsworks-4.1.0.tar.gz", hash = "sha256:95aee389eba4eac4aabeb77d88f037ecd71cde4e7a3b5764dec2540aff27b117"},
+    {file = "hopsworks-4.2.7-py3-none-any.whl", hash = "sha256:e1de179d3f9a1f9ab8eabada36e71f06a83578b524d0aee70031486b87a59662"},
+    {file = "hopsworks-4.2.7.tar.gz", hash = "sha256:bd2b21268a3b666b636fd55ad157c5781cc979ffd6c975bb40447cbcb364979d"},
 ]
 
 [package.dependencies]
@@ -1289,6 +1289,7 @@ grpcio = ">=1.49.1,<2.0.0"
 hopsworks_aiomysql = {version = "0.2.1", extras = ["sa"]}
 mock = "*"
 opensearch-py = ">=1.1.0,<=2.4.2"
+packaging = "*"
 pandas = "<2.2.0"
 protobuf = ">=4.25.4,<5.0.0"
 pyhumps = "1.6.1"
@@ -1306,7 +1307,7 @@ dev-no-opt = ["delta-spark (==1.0.1)", "hopsworks[python]", "moto[s3] (==5.0.0)"
 dev-pandas1 = ["delta-spark (==1.0.1)", "hopsworks[python]", "moto[s3] (==5.0.0)", "pandas (<=1.5.3)", "pyspark (==3.1.1)", "pytest (==7.4.4)", "pytest-mock (==3.12.0)", "ruff", "sqlalchemy (<=1.4.48)"]
 great-expectations = ["great_expectations (==0.18.12)"]
 polars = ["polars (>=0.20.18,<=0.21.0)", "pyarrow (>=10.0)"]
-python = ["confluent-kafka (<=2.3.0)", "fastavro (>=1.4.11,<=1.8.4)", "numpy (<2)", "pyarrow (>=10.0)", "tqdm"]
+python = ["confluent-kafka (<=2.6.1)", "fastavro (>=1.4.11,<=1.11.1)", "numpy (<2)", "pyarrow (>=10.0)", "tqdm"]
 
 [[package]]
 name = "hopsworks-aiomysql"
@@ -4417,5 +4418,5 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.9"
-content-hash = "b3e8610a32b3b7f1a7e445df9f0c4970fd0a811ec23d443f7d2729194dd5c4e4"
+python-versions = ">=3.9,<3.13"
+content-hash = "7cdc060e1169f823bc9a5b1e41fac7427531088e7f7ded8be9cb0eac7af67726"

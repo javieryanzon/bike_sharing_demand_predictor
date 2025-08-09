@@ -11,6 +11,7 @@ import pyarrow as pa
 import zipfile
 import pyarrow.parquet as pq
 import subprocess
+from pandas.api.types import is_string_dtype
 
 from src.paths import RAW_DATA_DIR, TRANSFORMED_DATA_DIR
 
@@ -178,7 +179,10 @@ def load_raw_data(
         }, inplace=True)
     
     # eliminate "BAEcobici" and convert it to int type
-    rides_one_year['pickup_location_id'] = rides_one_year['pickup_location_id'].str.replace('BAEcobici', '').astype(int)
+    if is_string_dtype(rides_one_year['pickup_location_id']): # agrego esto para que si esa columna viene como int no de error
+        rides_one_year['pickup_location_id'] = rides_one_year['pickup_location_id'].str.replace('BAEcobici', '', regex=False).astype(int)
+        #rides_one_year['pickup_location_id'] = rides_one_year['pickup_location_id'].str.replace('BAEcobici', '').astype(int)
+
     # transform "pickup_datetime" to datetime
     rides_one_year['pickup_datetime'] = pd.to_datetime(rides_one_year['pickup_datetime'],format='%Y-%m-%d %H:%M:%S')
 
