@@ -2,66 +2,102 @@ name: hourly-bike-demand-inference-pipeline #inference-pipeline
 
 on:
   workflow_run:
-    workflows: ["hourly-bike-demand-feature-pipeline"]  
-    types:
-      - completed
-
+    workflows: ["hourly-bike-demand-feature-pipeline"]
+    types: [completed]
   workflow_dispatch:
 
 env:
-  PYTHON_VERSION: 3.9
-  POETRY_VERSION: 1.8.2
+  PYTHON_VERSION: "3.9"
+  POETRY_VERSION: "1.8.2"
   POETRY_URL: https://install.python-poetry.org
 
-jobs:
-
-  inference_pipeline:
+jobs:  
+   inference_pipeline:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    # Poetry cache depends on OS, Python version and Poetry version.
-    - name: Cache Poetry cache
-      uses: actions/cache@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      with:
-        path: ~/.cache/pypoetry
-        key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
-    
-    # virtualenv cache should depends on OS, Python version and `poetry.lock` (and optionally workflow files).
-    - name: Cache Packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.local
-        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
-    
-    - name: Set up Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    
-    - name: Install Poetry
-      run: |
-        curl -sSL ${{ env.POETRY_URL }} | python - --version ${{ env.POETRY_VERSION }}
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-    
-    - name: Install Dependencies
-      run: poetry install
-   
-      
-    - name: exceute python workflows from bash script
-      env: 
-        HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        COMET_ML_API_KEY: ${{ secrets.COMET_ML_API_KEY }}
-        COMET_ML_WORKSPACE: ${{ secrets.COMET_ML_WORKSPACE }}
-        COMET_ML_PROJECT_NAME: ${{ secrets.COMET_ML_PROJECT_NAME }}
-      run: poetry run jupyter nbconvert --to notebook --execute notebooks/14_inference_pipeline.ipynb
-    
-    # - name: Generating new batch of predictions
-    #   env: 
-    #     HOPSWORKS_API_KEY: $#{{ secrets.HOPSWORKS_API_KEY }}
-    #   run: make inference
+      - name: Install Poetry
+        run: |
+          curl -sSL ${{ env.POETRY_URL }} | python3 - --version ${{ env.POETRY_VERSION }}
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      # 🔧 Bootstrap: crea HUDI offline (.hoodie) si falta, para que Arrow Flight no falle
+      - name: Bootstrap HUDI offline if missing
+        env:
+          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          poetry run python - << 'PY'
+          import pandas as pd, hopsworks
+          import src.config as config
+          from datetime import datetime, timezone
+
+          print("➡️ Login Hopsworks")
+          project = hopsworks.login(
+              project=config.HOPSWORKS_PROJECT_NAME,
+              api_key_value=config.HOPSWORKS_API_KEY
+          )
+          fs = project.get_feature_store()
+          fg = fs.get_feature_group(
+              name=config.FEATURE_GROUP_NAME,
+              version=config.FEATURE_GROUP_VERSION
+          )
+
+          need = False
+          try:
+              # Si HUDI no existe, fg.read() suele lanzar error con 'hoodie.properties'
+              fg.read(limit=1)
+              print("ℹ️ HUDI offline ya existe.")
+          except Exception as e:
+              if "hoodie.properties" in str(e):
+                  need = True
+              else:
+                  # Si el backend no soporta 'limit', intenta sin parámetro
+                  try:
+                      fg.read()
+                      print("ℹ️ HUDI offline ya existe (sin limit).")
+                  except Exception as e2:
+                      need = "hoodie.properties" in str(e2)
+
+          if need:
+              print("🛠️ Creando HUDI offline mínimo...")
+              row = {
+                "pickup_location_id": 1,
+                "pickup_hour": pd.to_datetime(datetime.now(timezone.utc)),
+              }
+              # 🔴 IMPORTANTE: si tu FG tiene más columnas NOT NULL, añádelas aquí:
+              # row.update({"otra_columna_int": 0, "otra_columna_str": "NA", ...})
+
+              df = pd.DataFrame([row])
+              fg.insert(df, storage="offline", write_options={"wait_for_job": True})
+              print("✅ HUDI offline creado.")
+          PY
+
+      - name: Run inference notebook
+        env:
+          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+          COMET_ML_API_KEY: ${{ secrets.COMET_ML_API_KEY }}
+          COMET_ML_WORKSPACE: ${{ secrets.COMET_ML_WORKSPACE }}
+          COMET_ML_PROJECT_NAME: ${{ secrets.COMET_ML_PROJECT_NAME }}
+        run: poetry run jupyter nbconvert --to notebook --execute notebooks/14_inference_pipeline.ipynb
+
+      - name: Upload executed notebook
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inference-notebook
+          path: notebooks/14_inference_pipeline.nbconvert.ipynb
   
 
