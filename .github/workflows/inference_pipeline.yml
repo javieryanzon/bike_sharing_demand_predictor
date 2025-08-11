@@ -1,204 +1,67 @@
-name: hourly-bike-demand-inference-pipeline
+name: hourly-bike-demand-inference-pipeline #inference-pipeline
 
-on:
-  workflow_run:
-    workflows: ["hourly-bike-demand-feature-pipeline"]
-    types: [completed]
+# on:
+#   workflow_run:
+#     workflows: ["hourly-bike-demand-feature-pipeline"]  
+#     types:
+#       - completed
+
   workflow_dispatch:
 
 env:
-  PYTHON_VERSION: "3.9"
-  POETRY_VERSION: "1.8.2"
+  PYTHON_VERSION: 3.9
+  POETRY_VERSION: 1.8.2
   POETRY_URL: https://install.python-poetry.org
 
-jobs:  
+jobs:
+
   inference_pipeline:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    # Poetry cache depends on OS, Python version and Poetry version.
+    - name: Cache Poetry cache
+      uses: actions/cache@v3
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: true
-          virtualenvs-in-project: false
+      with:
+        path: ~/.cache/pypoetry
+        key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
+    
+    # virtualenv cache should depends on OS, Python version and `poetry.lock` (and optionally workflow files).
+    - name: Cache Packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.local
+        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+    
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install Poetry
+      run: |
+        curl -sSL ${{ env.POETRY_URL }} | python - --version ${{ env.POETRY_VERSION }}
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+    
+    - name: Install Dependencies
+      run: poetry install
+   
+      
+    - name: exceute python workflows from bash script
+      env: 
+        HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        COMET_ML_API_KEY: ${{ secrets.COMET_ML_API_KEY }}
+        COMET_ML_WORKSPACE: ${{ secrets.COMET_ML_WORKSPACE }}
+        COMET_ML_PROJECT_NAME: ${{ secrets.COMET_ML_PROJECT_NAME }}
+      run: poetry run jupyter nbconvert --to notebook --execute notebooks/14_inference_pipeline.ipynb
+    
+    # - name: Generating new batch of predictions
+    #   env: 
+    #     HOPSWORKS_API_KEY: $#{{ secrets.HOPSWORKS_API_KEY }}
+    #   run: make inference
+  
 
-      # Cache dependencies
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry
-          key: poetry-deps-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        run: |
-          poetry install --no-interaction --no-ansi --no-dev
-          poetry show
-
-      # Verificar conectividad antes de ejecutar
-      - name: Test Hopsworks connection
-        env:
-          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: |
-          poetry run python - << 'EOF'
-          import hopsworks
-          import src.config as config
-          print("🔍 Testing Hopsworks connection...")
-          try:
-              # Usar la configuración del proyecto, no variable de entorno
-              project = hopsworks.login(
-                  project=config.HOPSWORKS_PROJECT_NAME,  # Desde config.py
-                  api_key_value=config.HOPSWORKS_API_KEY   # Desde config.py
-              )
-              print(f"✅ Successfully connected to project: {project.name}")
-              fs = project.get_feature_store()
-              print(f"✅ Feature store connected: {fs.name}")
-          except Exception as e:
-              print(f"❌ Connection failed: {str(e)}")
-              raise
-          EOF
-
-      # Verificar que el feature group existe y tiene datos
-      - name: Verify feature group status
-        env:
-          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: |
-          poetry run python - << 'EOF'
-          import hopsworks
-          import src.config as config
-          from datetime import datetime, timedelta
-          import pandas as pd
-
-          print("🔍 Checking feature group status...")
-          project = hopsworks.login(
-              project=config.HOPSWORKS_PROJECT_NAME,
-              api_key_value=config.HOPSWORKS_API_KEY
-          )
-          fs = project.get_feature_store()
-          
-          try:
-              fg = fs.get_feature_group(
-                  name=config.FEATURE_GROUP_NAME,
-                  version=config.FEATURE_GROUP_VERSION
-              )
-              print(f"✅ Feature group found: {fg.name} v{fg.version}")
-              
-              # Verificar metadata
-              print(f"📊 Schema: {len(fg.features)} features")
-              print(f"🏷️  Primary keys: {fg.primary_key}")
-              print(f"⏰ Event time: {fg.event_time}")
-              
-              # Intentar leer una muestra pequeña
-              try:
-                  sample = fg.read(limit=1, read_options={"arrow_flight_config": {"timeout": 60}})
-                  print(f"✅ Successfully read sample data: {len(sample)} rows")
-              except Exception as read_error:
-                  print(f"⚠️  Warning - Could not read data: {str(read_error)}")
-                  # Verificar si necesitamos crear datos mínimos
-                  if "hoodie.properties" in str(read_error) or "table does not exist" in str(read_error).lower():
-                      print("🛠️  Creating minimal HUDI structure...")
-                      minimal_data = pd.DataFrame([{
-                          'pickup_location_id': 1,
-                          'pickup_hour': pd.to_datetime('2024-01-01 00:00:00', utc=True),
-                          # Agregar otras columnas requeridas con valores por defecto
-                          **{f'rides_previous_{i}_hour': 0.0 for i in range(1, 673)}
-                      }])
-                      fg.insert(minimal_data, storage="offline", write_options={"wait_for_job": True})
-                      print("✅ Minimal structure created")
-                      
-          except Exception as e:
-              print(f"❌ Feature group error: {str(e)}")
-              raise
-          EOF
-
-      # Verificar feature view
-      - name: Verify feature view
-        env:
-          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: |
-          poetry run python - << 'EOF'
-          import hopsworks
-          import src.config as config
-
-          print("🔍 Checking feature view...")
-          project = hopsworks.login(
-              project=config.HOPSWORKS_PROJECT_NAME,
-              api_key_value=config.HOPSWORKS_API_KEY
-          )
-          fs = project.get_feature_store()
-          
-          try:
-              fv = fs.get_feature_view(
-                  name=config.FEATURE_VIEW_NAME,
-                  version=config.FEATURE_VIEW_VERSION
-              )
-              print(f"✅ Feature view found: {fv.name} v{fv.version}")
-              print(f"🔧 Features: {len(fv.features)} features")
-              
-              # Inicializar batch scoring si es necesario
-              if not fv._batch_scoring_server._serving_initialized:
-                  print("🚀 Initializing batch scoring...")
-                  fv.init_batch_scoring()
-                  print("✅ Batch scoring initialized")
-                  
-          except Exception as e:
-              print(f"❌ Feature view error: {str(e)}")
-              raise
-          EOF
-
-      - name: Run inference notebook with error handling
-        env:
-          HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-          COMET_ML_API_KEY: ${{ secrets.COMET_ML_API_KEY }}
-          COMET_ML_WORKSPACE: ${{ secrets.COMET_ML_WORKSPACE }}
-          COMET_ML_PROJECT_NAME: ${{ secrets.COMET_ML_PROJECT_NAME }}
-        run: |
-          set -e
-          echo "🚀 Starting inference pipeline..."
-          poetry run jupyter nbconvert \
-            --to notebook \
-            --execute \
-            --ExecutePreprocessor.timeout=600 \
-            --ExecutePreprocessor.kernel_name=python3 \
-            --allow-errors \
-            notebooks/14_inference_pipeline.ipynb
-          
-          # Verificar si el notebook se ejecutó exitosamente
-          if [ -f "notebooks/14_inference_pipeline.nbconvert.ipynb" ]; then
-            echo "✅ Notebook executed successfully"
-          else
-            echo "❌ Notebook execution failed"
-            exit 1
-          fi
-
-      - name: Upload executed notebook
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: inference-notebook-${{ github.run_number }}
-          path: |
-            notebooks/14_inference_pipeline_alternativa.nbconvert.ipynb
-            notebooks/14_inference_pipeline_alternativa.ipynb
-          retention-days: 30
-
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: failure-logs-${{ github.run_number }}
-          path: |
-            ~/.cache/pypoetry/
-            /tmp/hopsworks_logs/
-          retention-days: 7
