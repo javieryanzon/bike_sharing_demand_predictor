@@ -6,7 +6,7 @@
 <br />
  
 
-<i>*NOTA: El código de proyecto no se está manteniendo por lo que es probable que no funcione correctamente</i>
+<i>*NOTA: El código de proyecto no está siendo mantenido por lo que es probable que no funcione correctamente</i>
 
 
 ## Predictor de demanda
