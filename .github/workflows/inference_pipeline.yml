@@ -45,11 +45,13 @@ jobs:
 
       - name: Configure Poetry
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project false
 
       - name: Install dependencies
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           poetry install --no-interaction --no-ansi --no-dev
           poetry show
 
@@ -59,6 +61,7 @@ jobs:
           HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           poetry run python - << 'EOF'
           import hopsworks
           import src.config as config
@@ -83,6 +86,7 @@ jobs:
           HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           poetry run python - << 'EOF'
           import hopsworks
           import src.config as config
@@ -137,6 +141,7 @@ jobs:
           HOPSWORKS_PROJECT_NAME: ${{ secrets.HOPSWORKS_PROJECT_NAME }}
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           poetry run python - << 'EOF'
           import hopsworks
           import src.config as config
@@ -175,6 +180,7 @@ jobs:
           COMET_ML_WORKSPACE: ${{ secrets.COMET_ML_WORKSPACE }}
           COMET_ML_PROJECT_NAME: ${{ secrets.COMET_ML_PROJECT_NAME }}
         run: |
+          export PATH="${HOME}/.local/bin:$PATH"
           set -e
           echo "🚀 Starting inference pipeline..."
           poetry run jupyter nbconvert \
